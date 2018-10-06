@@ -9,7 +9,7 @@ import (
 
 type storeCallback func(url url.URL, in PluginIn)
 
-func doRequest(url string) *fasthttp.Response {
+func DefaultRequest(url string) *fasthttp.Response {
 	req := fasthttp.AcquireRequest()
 	req.SetRequestURI(url)
 	resp := fasthttp.AcquireResponse()
@@ -27,7 +27,7 @@ func Detect(rawUrl string, plugin PluginIn, storeCallback storeCallback) {
 	}
 	urlWithPayload := plugin.GenPayload(*fetchUrl)
 	if len(urlWithPayload) > 0 {
-		if plugin.ParserResponse(doRequest(urlWithPayload)) {
+		if plugin.ParserResponse(plugin.DoRequest(urlWithPayload)) {
 			storeCallback(*fetchUrl, plugin)
 		}
 	}

@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"fmt"
 	"strings"
+	"SQLinjCrawler"
 )
 
 type GitLeakPlugin struct {
@@ -32,4 +33,7 @@ func (plugin GitLeakPlugin) GetName() string {
 }
 func (plugin GitLeakPlugin) GenInfo(url url.URL) string {
 	return fmt.Sprintf("GITLEAK %s", plugin.GenPayload(url))
+}
+func (plugin GitLeakPlugin) DoRequest(url url.URL) *fasthttp.Response {
+	return SQLinjCrawler.DefaultRequest(url.String())
 }

@@ -29,7 +29,6 @@ func RockIt(path string, plugin PluginIn) {
 	for i := 0; i < 10000; i++ {
 		go Worker(conn, &wg, plugin)
 	}
-	// 8750000
 	for scanner.Scan() {
 		count += 1
 		wg.Add(1)

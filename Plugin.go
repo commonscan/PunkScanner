@@ -10,4 +10,5 @@ type PluginIn interface {
 	GenPayload(url url.URL) (string)
 	ParserResponse(response *fasthttp.Response) (bool)
 	GenInfo(url url.URL) (string)
+	DoRequest(url string) *fasthttp.Response
 }

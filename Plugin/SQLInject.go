@@ -6,6 +6,7 @@ import (
 	"github.com/valyala/fasthttp"
 	"regexp"
 	"fmt"
+	"SQLinjCrawler"
 )
 
 type SQLInjectionPlugin struct {
@@ -37,3 +38,8 @@ func (plugin SQLInjectionPlugin) GenInfo(url url.URL) string {
 func (SQLInjectionPlugin) GetName() string {
 	return "SQLINJ"
 }
+
+func (plugin SQLInjectionPlugin) DoRequest(url url.URL) *fasthttp.Response {
+	return SQLinjCrawler.DefaultRequest(url.String())
+}
+
