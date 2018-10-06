@@ -3,10 +3,11 @@ package SQLinjCrawler
 import (
 	"database/sql"
 	"fmt"
+	"net/url"
 )
 
 func StoreToMysql(url string) {
-	db, err := sql.Open("mysql", "root:xxx@tcp(178.128.67.122:3306)/sqlinj")
+	db, err := sql.Open("mysql", "root:xxx@tcp(host:3306)/sqlinj")
 	if err != nil {
 		print(err)
 		panic("failed to connect to mysql")
@@ -20,6 +21,6 @@ func StoreToMysql(url string) {
 	_, err = stmtIns.Exec(url)
 }
 
-func PrintSQLInjection(url string) {
-	fmt.Println("SQL Inj:", url)
+func PrintSQLInjection(url url.URL, in PluginIn) {
+	fmt.Println(in.GenInfo(url))
 }

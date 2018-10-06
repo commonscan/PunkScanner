@@ -8,14 +8,15 @@ import (
 	"fmt"
 )
 
-func Worker(conn chan string) {
+func Worker(conn chan string, wg *sync.WaitGroup, plugin PluginIn) {
 	for ; ; {
-		var raw_url = <-conn
-		Detect(raw_url, PayloadUrlGenerate, SQLInjParser, StoreToMysql)
+		var rawUrl = <-conn
+		Detect(rawUrl, plugin, PrintSQLInjection)
+		wg.Done()
 	}
 }
 
-func RockIt(path string) {
+func RockIt(path string, plugin PluginIn) {
 	file, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)
@@ -26,21 +27,16 @@ func RockIt(path string) {
 	var count = 0
 	conn := make(chan string, 102400)
 	for i := 0; i < 10000; i++ {
-		go Worker(conn)
+		go Worker(conn, &wg, plugin)
 	}
 	// 8750000
 	for scanner.Scan() {
 		count += 1
-		if count < 8750000 {
-			scanner.Text()
-			continue
-		}
+		wg.Add(1)
 		conn <- scanner.Text()
 		if count%10000 == 0 {
 			fmt.Println("----", count, "----")
 		}
 	}
-	fmt.Println("start waiting")
 	wg.Wait()
-	fmt.Println("end")
 }

@@ -7,9 +7,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type responseCallback func(response *fasthttp.Response) bool
-type storeCallback func(string)
-type preProcess func(url url.URL) string
+type storeCallback func(url url.URL, in PluginIn)
 
 func doRequest(url string) *fasthttp.Response {
 	req := fasthttp.AcquireRequest()
@@ -22,15 +20,15 @@ func doRequest(url string) *fasthttp.Response {
 	//return string(bodyBytes)
 }
 
-func Detect(rawUrl string, pre preProcess, parseCallback responseCallback, storeCallback storeCallback) {
+func Detect(rawUrl string, plugin PluginIn, storeCallback storeCallback) {
 	var fetchUrl, err = url.Parse(rawUrl)
 	if err != nil {
 		return
 	}
-	urlWithPayload := pre(*fetchUrl)
+	urlWithPayload := plugin.GenPayload(*fetchUrl)
 	if len(urlWithPayload) > 0 {
-		if parseCallback(doRequest(urlWithPayload)) {
-			storeCallback(rawUrl)
+		if plugin.ParserResponse(doRequest(urlWithPayload)) {
+			storeCallback(*fetchUrl, plugin)
 		}
 	}
 }
