@@ -3,12 +3,12 @@ package main
 import (
 	"SQLinjCrawler/Plugin"
 	"SQLinjCrawler"
+	"os"
 )
 
 func main() {
 	// SQLInjection scan
 	//var plugin = Plugin.SQLInjectionPlugin{}
-	//SQLinjCrawler.RockIt("/tmp/1.txt", plugin)
 	var plugin = Plugin.S2_045{}
-	SQLinjCrawler.RockIt("/tmp/2.txt", plugin)
+	SQLinjCrawler.RockIt(os.Args[1], plugin)
 }
